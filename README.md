@@ -55,42 +55,40 @@ Available options:
                         That file will be used by default if it already exists.
 -d, --destination       Destination ISO file. By default <script directory>/ubuntu-autoinstall-<current date>.iso will be
                         created, overwriting any existing file.
+-ed, --extra-data       额外的文件会打包到ISO镜像内，放在extra-data目录下
 ```
 
 ### Example
 ```
-user@testbox:~$ bash ubuntu-autoinstall-generator.sh -a -u user-data.example -d ubuntu-autoinstall-example.iso
-[2020-12-23 14:06:07] 👶 Starting up...
-[2020-12-23 14:06:07] 📁 Created temporary working directory /tmp/tmp.jrmlEaDhL3
-[2020-12-23 14:06:07] 🔎 Checking for required utilities...
-[2020-12-23 14:06:07] 👍 All required utilities are installed.
-[2020-12-23 14:06:07] 🌎 Downloading current daily ISO image for Ubuntu 20.04 Focal Fossa...
-[2020-12-23 14:08:01] 👍 Downloaded and saved to /home/user/ubuntu-original-2020-12-23.iso
-[2020-12-23 14:08:01] 🌎 Downloading SHA256SUMS & SHA256SUMS.gpg files...
-[2020-12-23 14:08:02] 🌎 Downloading and saving Ubuntu signing key...
-[2020-12-23 14:08:02] 👍 Downloaded and saved to /home/user/843938DF228D22F7B3742BC0D94AA3F0EFE21092.keyring
-[2020-12-23 14:08:02] 🔐 Verifying /home/user/ubuntu-original-2020-12-23.iso integrity and authenticity...
-[2020-12-23 14:08:09] 👍 Verification succeeded.
-[2020-12-23 14:08:09] 🔧 Extracting ISO image...
-[2020-12-23 14:08:11] 👍 Extracted to /tmp/tmp.jrmlEaDhL3
-[2020-12-23 14:08:11] 🧩 Adding autoinstall parameter to kernel command line...
-[2020-12-23 14:08:11] 👍 Added parameter to UEFI and BIOS kernel command lines.
-[2020-12-23 14:08:11] 🧩 Adding user-data and meta-data files...
-[2020-12-23 14:08:11] 👍 Added data and configured kernel command line.
-[2020-12-23 14:08:11] 👷 Updating /tmp/tmp.jrmlEaDhL3/md5sum.txt with hashes of modified files...
-[2020-12-23 14:08:11] 👍 Updated hashes.
-[2020-12-23 14:08:11] 📦 Repackaging extracted files into an ISO image...
-[2020-12-23 14:08:14] 👍 Repackaged into /home/user/ubuntu-autoinstall-example.iso
-[2020-12-23 14:08:14] ✅ Completed.
-[2020-12-23 14:08:14] 🚽 Deleted temporary working directory /tmp/tmp.jrmlEaDhL3
+user@testbox:~$ bash ubuntu-autoinstall-generator.sh -a -u user-data.example -ed backup.tar.gz -d ubuntu-custom-super.iso
+[2023-04-21 09:21:47] 👶 Starting up...
+ubuntu-autoinstall-generator.sh: line 125: [: ../../backup.tar.gz: integer expression expected
+[2023-04-21 09:21:47] 📁 Created temporary working directory /tmp/tmp.yNHF9Nk2f8
+[2023-04-21 09:21:47] 🔎 Checking for required utilities...
+[2023-04-21 09:21:47] 👍 All required utilities are installed.
+[2023-04-21 09:21:47] ☑️ Using existing /root/ubuntu-20.04.5-live-server-amd64.iso file.
+[2023-04-21 09:21:47] 🤞 Skipping verification of source ISO.
+[2023-04-21 09:21:47] 🔧 Extracting ISO image...
+[2023-04-21 09:21:49] 👍 Extracted to /tmp/tmp.yNHF9Nk2f8
+[2023-04-21 09:21:49] 🧩 Adding autoinstall parameter to kernel command line...
+[2023-04-21 09:21:49] 👍 Added parameter to UEFI and BIOS kernel command lines.
+[2023-04-21 09:21:49] 🧩 Adding user-data and meta-data files...
+[2023-04-21 09:21:49] 👍 Added data and configured kernel command line.
+[2023-04-21 09:21:49] 🧩 Adding extra-data files...
+[2023-04-21 09:21:50] 👍 Added extra-data.
+[2023-04-21 09:21:50] 👷 Updating /tmp/tmp.yNHF9Nk2f8/md5sum.txt with hashes of modified files...
+[2023-04-21 09:21:50] 👍 Updated hashes.
+[2023-04-21 09:21:50] 📦 Repackaging extracted files into an ISO image...
+[2023-04-21 09:21:56] 👍 Repackaged into /root/work/auto/ubuntu-custom-super.iso
+[2023-04-21 09:21:56] ✅ Completed.
+[2023-04-21 09:21:56] 🚽 Deleted temporary working directory /tmp/tmp.yNHF9Nk2f8
 ```
 
-Now you can boot your target machine using ```ubuntu-autoinstall-example.iso``` and it will automatically install Ubuntu using the configuration from ```user-data.example```.
+Now you can boot your target machine using ```ubuntu-custom-super.iso``` and it will automatically install Ubuntu using the configuration from ```user-data.example```.
 
 ## autoinstall说明  
 https://ubuntu.com/server/docs/install/autoinstall  
 
-### 
 
 ### Thanks
 This script is based on [this](https://betterdev.blog/minimal-safe-bash-script-template/) minimal safe bash template, and steps found in [this](https://discourse.ubuntu.com/t/please-test-autoinstalls-for-20-04/15250) discussion thread (particularly [this](https://gist.github.com/s3rj1k/55b10cd20f31542046018fcce32f103e) script).
