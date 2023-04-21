@@ -1,7 +1,40 @@
 #cloud-config
 autoinstall:
-  version: 1
+  apt:
+    disable_components: []
+    geoip: true
+    preserve_sources_list: false
+    primary:
+    - arches:
+      - amd64
+      - i386
+      uri: http://archive.ubuntu.com/ubuntu
+    - arches:
+      - default
+      uri: http://ports.ubuntu.com/ubuntu-ports
+  drivers:
+    install: false
   identity:
-    hostname: ubuntu-server
-    password: "$6$exDY1mhS4KUYCE/2$zmn9ToZwTKLhCw.b4/b.ZRTIZM30JZ4QrOQ2aOXJ8yk96xpcCof0kxKwuX1kqLG/ygbJ1f8wxED22bTL4F46P0"
-    username: ubuntu
+    hostname: netvine
+    password: $6$QWnPN1SXNq5D42Mh$Ir.x3yt3LiPWVUgwl/zh289pWxV1c6yTVeG6csJBXiu7UieXf739cC/5O9J6Mus5bY9ouBqWsNLWaXQUJkEtB0
+    realname: netvine
+    username: netvine
+  kernel:
+    package: linux-generic
+  keyboard:
+    layout: us
+    toggle: null
+    variant: ''
+  locale: en_US.UTF-8
+  ssh:
+    allow-pw: true
+    authorized-keys: []
+    install-server: true
+  storage:
+    layout:
+      name: direct
+  late-commands:
+    - tar -xvpzf /cdrom/extra-data/backup.tar.gz -C /target/ --numeric-owner 
+  updates: security
+  shutdown: poweroff
+  version: 1

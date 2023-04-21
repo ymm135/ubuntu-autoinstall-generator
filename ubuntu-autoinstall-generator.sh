@@ -56,6 +56,7 @@ Available options:
                         That file will be used by default if it already exists.
 -d, --destination       Destination ISO file. By default ${script_dir}/ubuntu-autoinstall-$today.iso will be
                         created, overwriting any existing file.
+-ed, --extra-data       额外的文件会打包到ISO镜像内，放在extra-data目录下
 EOF
         exit
 }
@@ -70,11 +71,12 @@ function parse_params() {
         source_iso="${script_dir}/${original_iso}"
         destination_iso="${script_dir}/ubuntu-autoinstall-$today.iso"
         sha_suffix="${today}"
-        gpg_verify=1
-        all_in_one=0
+        gpg_verify=0
+        all_in_one=1
         use_hwe_kernel=0
         md5_checksum=1
         use_release_iso=0
+        extra_data=''
 
         while :; do
                 case "${1-}" in
@@ -101,6 +103,10 @@ function parse_params() {
                         meta_data_file="${2-}"
                         shift
                         ;;
+                -ed | --extra-data)
+                        extra_data="${2-}"
+                        shift
+                        ;;
                 -?*) die "Unknown option: $1" ;;
                 *) break ;;
                 esac
@@ -114,6 +120,11 @@ function parse_params() {
                 [[ -z "${user_data_file}" ]] && die "💥 user-data file was not specified."
                 [[ ! -f "$user_data_file" ]] && die "💥 user-data file could not be found."
                 [[ -n "${meta_data_file}" ]] && [[ ! -f "$meta_data_file" ]] && die "💥 meta-data file could not be found."
+        fi
+
+        if [ ${extra_data} -ne 0 ]; then
+                echo "extra_data=$extra_data"
+                [[ ! -f "${extra_data}" ]] && die "💥 Extra data file could not be found."
         fi
 
         if [ "${source_iso}" != "${script_dir}/${original_iso}" ]; then
@@ -133,6 +144,7 @@ function parse_params() {
 
         destination_iso=$(realpath "${destination_iso}")
         source_iso=$(realpath "${source_iso}")
+        extra_data=$(realpath "${extra_data}")
 
         return 0
 }
@@ -246,6 +258,14 @@ if [ ${all_in_one} -eq 1 ]; then
         sed -i -e 's,---, ds=nocloud\\\;s=/cdrom/nocloud/  ---,g' "$tmpdir/boot/grub/grub.cfg"
         sed -i -e 's,---, ds=nocloud\\\;s=/cdrom/nocloud/  ---,g' "$tmpdir/boot/grub/loopback.cfg"
         log "👍 Added data and configured kernel command line."
+fi
+
+if [ -f "${extra_data}" ]; then
+        # 打包到ISO目录
+        log "🧩 Adding extra-data files..."
+        mkdir "$tmpdir/extra-data"
+        cp "$extra_data" "$tmpdir/extra-data"
+        log "👍 Added extra-data."
 fi
 
 if [ ${md5_checksum} -eq 1 ]; then
