@@ -25,6 +25,19 @@ Tested on a host running Ubuntu 20.04.1.
     - ```gpg```
     - ```isolinux```
 
+安装依赖:  
+
+```sh
+apt install -y xorriso  sed curl gpg isolinux
+```
+
+iso解压工具，用于查看iso制作情况:  
+```sh
+sudo apt-get install p7zip-full p7zip-rar 
+```
+
+解压操作: `7z x ubuntu-16.10-server-amd64.iso`  
+
 ### Usage
 ```
 Usage: ubuntu-autoinstall-generator.sh [-h] [-v] [-a] [-e] [-u user-data-file] [-m meta-data-file] [-k] [-c] [-r] [-s source-iso-file] [-d destination-iso-file]
