@@ -105,7 +105,7 @@ https://ubuntu.com/server/docs/install/autoinstall
 ### 软件包制作  
 
 ```sh
-tar   
+tar   \
 --exclude=backup.tar.gz   \
 --exclude=/lost+found   \
 --exclude=/proc \
@@ -116,7 +116,7 @@ tar
 --exclude=/boot \
 --exclude=/tmp \
 --exclude=/var/cache/apt/archives \
--exclude=/run \
+--exclude=/run \
 --warning=no-file-changed \
 --exclude=/home \
 --exclude=/usr/lib/debug \
