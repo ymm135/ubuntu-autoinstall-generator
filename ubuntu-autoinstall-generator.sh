@@ -121,8 +121,8 @@ function parse_params() {
                 [[ ! -f "$user_data_file" ]] && die "💥 user-data file could not be found."
                 [[ -n "${meta_data_file}" ]] && [[ ! -f "$meta_data_file" ]] && die "💥 meta-data file could not be found."
         fi
-
-        if [ ${extra_data} -ne 0 ]; then
+        
+        if [[ "${extra_data}" != "" ]]; then
                 echo "extra_data=$extra_data"
                 [[ ! -f "${extra_data}" ]] && die "💥 Extra data file could not be found."
         fi
