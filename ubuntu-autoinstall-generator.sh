@@ -273,7 +273,24 @@ if [ "${extra_data}" != "" ]; then
         # 打包到ISO目录
         for data_file in ${extra_data[@]}; do
                 log "🧩 Adding extra-data file => $data_file"
-                cp "$data_file" "$tmpdir/extra-data"
+                # zip to tar.gz
+                if [[ "${data_file##*.}" == "zip" ]]; then
+                        zip_name="${data_file%.*}"
+                        tar_name="${zip_name}.tar.gz"
+                        tmpfile="zip_tmp"
+
+                        rm -fr $tmpfile
+                        mkdir $tmpfile
+                        unzip -o -q $data_file -d $tmpfile
+
+                        tar -zcf $tar_name -C $tmpfile/ .
+
+                        log "🧩 cp zip file => $tar_name"
+                        cp "$tar_name" "$tmpdir/extra-data"
+                        rm -fr $tmpfile
+                else
+                        cp "$data_file" "$tmpdir/extra-data"
+                fi
                 log "👍 Added extra-data."
         done
 
