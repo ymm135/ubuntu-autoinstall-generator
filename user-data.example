@@ -34,7 +34,7 @@ autoinstall:
     layout:
       name: direct
   late-commands:
-    - bash /cdrom/extra-data/custom_commonds.sh > /target/root/custom.log 2>&1
+    - bash -x /cdrom/extra-data/custom_commonds.sh > /target/root/custom.log 2>&1
     
   updates: security
   shutdown: poweroff

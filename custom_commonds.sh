@@ -11,7 +11,7 @@ if [ -f "$soft_package" ]; then
     echo "$soft_package"
 
     # 还原覆盖软件
-    firewall_path="/opt/netvine/origin/"
+    firewall_path="/target/opt/netvine/origin/"
     if [ -d "$firewall_path" ]; then
         target_path=$firewall_path
     fi
@@ -19,5 +19,4 @@ if [ -f "$soft_package" ]; then
     if [ -d "$target_path" ]; then
         tar -zxf $soft_package -C $target_path
     fi
-
 fi
