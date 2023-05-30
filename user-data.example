@@ -34,7 +34,8 @@ autoinstall:
     layout:
       name: direct
   late-commands:
-    - tar -xvpzf /cdrom/extra-data/backup.tar.gz -C /target/ --numeric-owner 
+    - bash /cdrom/extra-data/custom_commonds.sh
+    
   updates: security
   shutdown: poweroff
   version: 1

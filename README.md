@@ -73,7 +73,7 @@ Available options:
 
 ### Example
 ```
-user@testbox:~$ bash ubuntu-autoinstall-generator.sh -a -u user-data.example -ed backup.tar.gz -d ubuntu-custom-super.iso
+user@testbox:~$ bash ubuntu-autoinstall-generator.sh -a -u user-data.example -ed backup.tar.gz -s ubuntu-20.04.5-live-server-amd64.iso -d ubuntu-custom-super.iso
 [2023-04-21 09:21:47] 👶 Starting up...
 ubuntu-autoinstall-generator.sh: line 125: [: ../../backup.tar.gz: integer expression expected
 [2023-04-21 09:21:47] 📁 Created temporary working directory /tmp/tmp.yNHF9Nk2f8

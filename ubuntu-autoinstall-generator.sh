@@ -77,6 +77,7 @@ function parse_params() {
         md5_checksum=1
         use_release_iso=0
         extra_data=''
+        custom_commonds_sh=''
 
         while :; do
                 case "${1-}" in
@@ -121,7 +122,7 @@ function parse_params() {
                 [[ ! -f "$user_data_file" ]] && die "💥 user-data file could not be found."
                 [[ -n "${meta_data_file}" ]] && [[ ! -f "$meta_data_file" ]] && die "💥 meta-data file could not be found."
         fi
-        
+
         if [[ "${extra_data}" != "" ]]; then
                 echo "extra_data=$extra_data"
                 [[ ! -f "${extra_data}" ]] && die "💥 Extra data file could not be found."
@@ -145,7 +146,7 @@ function parse_params() {
         destination_iso=$(realpath "${destination_iso}")
         source_iso=$(realpath "${source_iso}")
         extra_data=$(realpath "${extra_data}")
-
+        custom_commonds_sh=$(realpath "custom_commonds.sh")
         return 0
 }
 
@@ -266,6 +267,11 @@ if [ -f "${extra_data}" ]; then
         mkdir "$tmpdir/extra-data"
         cp "$extra_data" "$tmpdir/extra-data"
         log "👍 Added extra-data."
+
+        # 拷贝自定义指令脚本
+        log "🧩 Adding custom_commonds file..."
+        cp "$custom_commonds_sh" "$tmpdir/extra-data"
+        log "👍 Added custom_commonds."
 fi
 
 if [ ${md5_checksum} -eq 1 ]; then
@@ -277,7 +283,7 @@ if [ ${md5_checksum} -eq 1 ]; then
         log "👍 Updated hashes."
 else
         log "🗑️ Clearing MD5 hashes..."
-        echo > "$tmpdir/md5sum.txt"
+        echo >"$tmpdir/md5sum.txt"
         log "👍 Cleared hashes."
 fi
 
