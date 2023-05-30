@@ -10,12 +10,12 @@ if [ -f "$soft_package" ]; then
     echo "$soft_package"
 
     # 还原覆盖软件
-    firewall_path=" unzip $soft_package -d /target/opt/firewall"
+    firewall_path="/target/opt/firewall"
     if [ -d "$firewall_path" ]; then
         unzip $soft_package -d $firewall_path
     fi
 
-    audit_path=" unzip $soft_package -d /target/opt/audit"
+    audit_path="/target/opt/audit"
     if [ -d "$audit_path" ]; then
         unzip $soft_package -d $audit_path
     fi
