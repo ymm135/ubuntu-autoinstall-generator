@@ -5,7 +5,7 @@ echo "recover backup"
 tar -xvpzf /cdrom/extra-data/backup.tar.gz -C /target/ --numeric-owner
 
 # 升级软件包
-soft_package=$(ls *md5*.zip)
+soft_package=$(ls /cdrom/extra-data/*md5*.zip)
 target_path=""
 if [ -f "$soft_package" ]; then
     echo "$soft_package"
