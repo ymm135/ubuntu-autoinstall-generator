@@ -21,7 +21,7 @@ if [ -f "$soft_package" ]; then
         target_path=$audit_path
     fi
 
-    if [ -f "$target_path" ]; then
+    if [ -d "$target_path" ]; then
         unzip -o $soft_package -d $target_path
     fi
 
