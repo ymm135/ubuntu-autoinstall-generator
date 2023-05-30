@@ -105,7 +105,7 @@ function parse_params() {
                         shift
                         ;;
                 -ed | --extra-data)
-                        extra_data="${2-}"
+                        extra_data="${@:2}"
                         shift
                         ;;
                 -?*) die "Unknown option: $1" ;;
@@ -124,8 +124,12 @@ function parse_params() {
         fi
 
         if [[ "${extra_data}" != "" ]]; then
-                echo "extra_data=$extra_data"
-                [[ ! -f "${extra_data}" ]] && die "💥 Extra data file could not be found."
+                log "🔎 extra_data=$extra_data"
+                # 遍历所有文件
+                for data_file in ${extra_data[@]}; do
+                        echo "${data_file}"
+                        [[ ! -f "${data_file}" ]] && die "💥 Extra data file could not be found => ${data_file}."
+                done
         fi
 
         if [ "${source_iso}" != "${script_dir}/${original_iso}" ]; then
@@ -145,7 +149,7 @@ function parse_params() {
 
         destination_iso=$(realpath "${destination_iso}")
         source_iso=$(realpath "${source_iso}")
-        extra_data=$(realpath "${extra_data}")
+        # extra_data=$(realpath "${extra_data}")
         custom_commonds_sh=$(realpath "custom_commonds.sh")
         return 0
 }
@@ -261,12 +265,17 @@ if [ ${all_in_one} -eq 1 ]; then
         log "👍 Added data and configured kernel command line."
 fi
 
-if [ -f "${extra_data}" ]; then
+if [ "${extra_data}" != "" ]; then
+        if [ ! -d "$tmpdir/extra-data" ]; then
+                mkdir "$tmpdir/extra-data"
+        fi
+
         # 打包到ISO目录
-        log "🧩 Adding extra-data files..."
-        mkdir "$tmpdir/extra-data"
-        cp "$extra_data" "$tmpdir/extra-data"
-        log "👍 Added extra-data."
+        for data_file in ${extra_data[@]}; do
+                log "🧩 Adding extra-data file => $data_file"
+                cp "$data_file" "$tmpdir/extra-data"
+                log "👍 Added extra-data."
+        done
 
         # 拷贝自定义指令脚本
         log "🧩 Adding custom_commonds file..."

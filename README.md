@@ -73,7 +73,7 @@ Available options:
 
 ### Example
 ```
-user@testbox:~$ bash ubuntu-autoinstall-generator.sh -a -u user-data.example -ed backup.tar.gz -s ubuntu-20.04.5-live-server-amd64.iso -d ubuntu-custom-super.iso
+user@testbox:~$ bash ubuntu-autoinstall-generator.sh -a -u user-data.example -s ubuntu-20.04.5-live-server-amd64.iso -d ubuntu-custom-super.iso -ed backup.tar.gz firewall_build_x86_6500_v1.0.0_20230511-113215_develop_md592946e9c7059585687c1ab2e0dcec1b1.zip
 [2023-04-21 09:21:47] 👶 Starting up...
 ubuntu-autoinstall-generator.sh: line 125: [: ../../backup.tar.gz: integer expression expected
 [2023-04-21 09:21:47] 📁 Created temporary working directory /tmp/tmp.yNHF9Nk2f8
