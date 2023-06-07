@@ -126,7 +126,31 @@ tar   \
 -cvpzf backup.tar.gz /
 ```
 
-> 如果需要备份串口工功能，需要备份boot目录.去掉--exclude=/boot  
+
+自定义备份指令:
+```sh
+tar   \
+--exclude=backup.tar.gz   \
+--exclude=/lost+found   \
+--exclude=/proc \
+--exclude=/mnt \
+--exclude=/etc/fstab \
+--exclude=/sys \
+--exclude=/dev \
+--exclude=/boot \
+--exclude=/tmp \
+--exclude=/var/cache/apt/archives \
+--exclude=/run \
+--warning=no-file-changed \
+--exclude=/home \
+--exclude=/usr/lib/debug \
+--exclude=/var/lib/libvirt \
+--exclude=/root --exclude=/swap.img \
+--exclude=/etc/netplan \
+--exclude=/root/ \
+--exclude=/home/ \
+-cvpzf backup.tar.gz /
+```
 
 ### Thanks
 This script is based on [this](https://betterdev.blog/minimal-safe-bash-script-template/) minimal safe bash template, and steps found in [this](https://discourse.ubuntu.com/t/please-test-autoinstalls-for-20-04/15250) discussion thread (particularly [this](https://gist.github.com/s3rj1k/55b10cd20f31542046018fcce32f103e) script).
