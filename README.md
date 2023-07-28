@@ -152,6 +152,56 @@ tar   \
 -cvpzf backup.tar.gz /
 ```
 
+
+
+### macos 制作系统U盘
+```sh
+# 1. 使用系统自带的磁盘管理工具格式化U盘， 选项为格式: MACOS拓展(日志格式)， 方案为GUID分区图
+
+# 2. 取消磁盘挂载
+# 终端执行以下命令
+# 列出磁盘，找到你usb硬盘的盘符
+diskutil list
+# 输出如下：可以看到usb硬盘为/dev/disk2
+/dev/disk0 (internal):
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:      GUID_partition_scheme                         251.0 GB   disk0
+   1:                        EFI EFI                     314.6 MB   disk0s1
+   2:                 Apple_APFS Container disk1         250.7 GB   disk0s2
+ 
+/dev/disk1 (synthesized):
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:      APFS Container Scheme -                      +250.7 GB   disk1
+                                 Physical Store disk0s2
+   1:                APFS Volume Macintosh HD            125.9 GB   disk1s1
+   2:                APFS Volume Preboot                 67.5 MB    disk1s2
+   3:                APFS Volume Recovery                1.0 GB     disk1s3
+   4:                APFS Volume VM                      6.4 GB     disk1s4
+ 
+/dev/disk2 (external, physical):
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:     FDisk_partition_scheme                        *16.0 GB    disk2
+   1:                       0xEF                         6.4 MB     disk2s2
+ 
+ 
+ 
+# 取消usb硬盘的挂载
+diskutil unmountDisk /dev/disk2
+
+
+# 3. 导入镜像
+# 执行如下命令
+# if是镜像文件路径
+# of是导入的目的磁盘
+# bs是读写快的大小，太小会增大io，降低效率，一般1m～2m即可。
+sudo dd if=~/Downloads/CentOS-7-x86_64-DVD-1511.iso of=/dev/disk2 bs=2m
+```
+
+> ok，操作完成，等待导入完成即可。此导入需要等待一段时间，可能会比较久。耐心等待即可。  
+
+
+
+
 ### Thanks
 This script is based on [this](https://betterdev.blog/minimal-safe-bash-script-template/) minimal safe bash template, and steps found in [this](https://discourse.ubuntu.com/t/please-test-autoinstalls-for-20-04/15250) discussion thread (particularly [this](https://gist.github.com/s3rj1k/55b10cd20f31542046018fcce32f103e) script).
 The somewhat outdated Ubuntu documentation [here](https://help.ubuntu.com/community/LiveCDCustomization#Assembling_the_file_system) was also useful.
