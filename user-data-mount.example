@@ -1,0 +1,115 @@
+#cloud-config
+autoinstall:
+  apt:
+    disable_components: []
+    geoip: true
+    preserve_sources_list: false
+    primary:
+    - arches:
+      - amd64
+      - i386
+      uri: http://archive.ubuntu.com/ubuntu
+    - arches:
+      - default
+      uri: http://ports.ubuntu.com/ubuntu-ports
+  drivers:
+    install: false
+  identity:
+    hostname: netvine
+    password: $6$QWnPN1SXNq5D42Mh$Ir.x3yt3LiPWVUgwl/zh289pWxV1c6yTVeG6csJBXiu7UieXf739cC/5O9J6Mus5bY9ouBqWsNLWaXQUJkEtB0
+    realname: netvine
+    username: netvine
+  kernel:
+    package: linux-generic
+  keyboard:
+    layout: us
+    toggle: null
+    variant: ''
+  locale: en_US.UTF-8
+  ssh:
+    allow-pw: true
+    authorized-keys: []
+    install-server: true
+  storage:
+    config:
+    - ptable: gpt
+      path: /dev/sda
+      wipe: superblock-recursive
+      preserve: false
+      name: ''
+      grub_device: false
+      type: disk
+      id: disk-sda
+    - device: disk-sda
+      size: 1127219200
+      wipe: superblock
+      flag: boot
+      number: 1
+      preserve: false
+      grub_device: true
+      type: partition
+      id: partition-0
+    - fstype: fat32
+      volume: partition-0
+      preserve: false
+      type: format
+      id: format-0
+    - device: disk-sda
+      size: 126906007552
+      wipe: superblock
+      flag: ''
+      number: 2
+      preserve: false
+      grub_device: false
+      type: partition
+      id: partition-1
+    - fstype: ext4
+      volume: partition-1
+      preserve: false
+      type: format
+      id: format-1
+    - path: /
+      device: format-1
+      type: mount
+      id: mount-1
+    - path: /boot/efi
+      device: format-0
+      type: mount
+      id: mount-0
+    - ptable: gpt
+      path: /dev/sdb
+      preserve: true
+      name: ''
+      grub_device: false
+      type: disk
+      id: disk-sdb
+    - device: disk-sdb
+      size: 1127219200
+      flag: boot
+      number: 1
+      preserve: true
+      grub_device: false
+      type: partition
+      id: partition-sdb1
+    - device: disk-sdb
+      size: 3999656837120
+      flag: linux
+      number: 2
+      preserve: true
+      grub_device: false
+      type: partition
+      id: partition-sdb2
+    - fstype: ext4
+      volume: partition-sdb2
+      preserve: true
+      type: format
+      id: format-2
+    - path: /data
+      device: format-2
+      type: mount
+      id: mount-2
+  late-commands:
+    - bash -x /cdrom/extra-data/custom_commonds.sh > /target/root/custom.log 2>&1
+  updates: security
+  shutdown: poweroff
+  version: 1
