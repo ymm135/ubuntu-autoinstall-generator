@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# 清除/data/数据
+echo "clean /data"
+rm -fr /target/data
 
 # 还原备份包
 echo "recover backup"
