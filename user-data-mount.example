@@ -40,6 +40,13 @@ autoinstall:
       grub_device: false
       type: disk
       id: disk-sda
+    - path: /dev/sdb
+      wipe: superblock
+      preserve: false
+      name: ''
+      grub_device: false
+      type: disk
+      id: disk-sdb
     - device: disk-sda
       size: 1127219200
       wipe: superblock
@@ -76,32 +83,9 @@ autoinstall:
       device: format-0
       type: mount
       id: mount-0
-    - ptable: gpt
-      path: /dev/sdb
-      preserve: true
-      name: ''
-      grub_device: false
-      type: disk
-      id: disk-sdb
-    - device: disk-sdb
-      size: 1127219200
-      flag: boot
-      number: 1
-      preserve: true
-      grub_device: false
-      type: partition
-      id: partition-sdb1
-    - device: disk-sdb
-      size: 3999656837120
-      flag: linux
-      number: 2
-      preserve: true
-      grub_device: false
-      type: partition
-      id: partition-sdb2
     - fstype: ext4
-      volume: partition-sdb2
-      preserve: true
+      volume: disk-sdb
+      preserve: false
       type: format
       id: format-2
     - path: /data
