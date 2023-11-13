@@ -199,8 +199,101 @@ sudo dd if=~/Downloads/CentOS-7-x86_64-DVD-1511.iso of=/dev/disk2 bs=2m
 
 > ok，操作完成，等待导入完成即可。此导入需要等待一段时间，可能会比较久。耐心等待即可。  
 
+### 目录结构
+```sh
+├── LICENSE
+├── README.md
+├── custom_commonds.sh                  # 自定义指令，在安装基础系统之后会执行该脚本，比如覆盖系统备份、应用、系统文件等
+├── resource                            # 资源文件
+│   ├── override                        # 覆盖目录，比如resource/override/data/device/device_info.conf 就会覆盖目标系统的/data/device/device_info.conf 配置
+│   │   └── root
+│   └── shell                           # 自定义脚本，可以增加比如修改文件、清除日志等操作
+│       ├── hello.sh
+│       └── system.sh
+├── ubuntu-autoinstall-generator.sh
+├── user-data-mount.example             # 双盘配置
+└── user-data.example                   # 单盘配置
+```
 
+`custom_commonds.sh`内容
+```sh
+#!/usr/bin/env bash
+# 清除/data/数据
+echo "clean /data"
+rm -fr /target/data/*
 
+# 还原备份包
+echo "recover backup"
+tar -xpzf /cdrom/extra-data/backup.tar.gz -C /target/ --numeric-owner
+
+# 升级软件包
+soft_package=$(ls /cdrom/extra-data/*md5*.tar.gz)
+target_path=""
+if [ -f "$soft_package" ]; then
+    echo "$soft_package"
+
+    # 还原覆盖软件
+    firewall_path="/target/opt/netvine/origin/"
+    if [ -d "$firewall_path" ]; then
+        target_path=$firewall_path
+    fi
+
+    if [ -d "$target_path" ]; then
+        # 先删除历史数据
+        rm -fr ${target_path}*
+        tar -zxf $soft_package -C $target_path
+    fi
+fi
+
+# 执行自定义指令
+baseDir="/cdrom/extra-data/resource"
+for script in $baseDir/shell/*.sh; do
+    if [ -f "$script" ]; then
+        echo "Running script: $script"
+        bash -x "$script"
+    fi
+done
+
+# 覆盖文件
+rsync -av $baseDir/override/* /target/
+```
+
+### 安装系统`Ubuntu Live System`  
+
+现在的想法是在`Ubuntu Live System`完成硬盘的挂载或者逻辑盘的建立。  
+
+首选需要找到为挂载的硬盘`sdb`,初始化文件系统，格式化，最终在写到目标系统的 `fstab` 中 
+
+在Ubuntu系统中，要将一个物理硬盘（如`sdb`）挂载到另一个硬盘（如`sda`）上的特定分区（比如 `/data`），你可以遵循以下步骤：
+
+1. **创建挂载点**：首先，创建一个目录作为挂载点。假设你想要将`sdb`挂载到`/data`目录，你需要确保该目录存在。
+   ```sh
+   sudo mkdir -p /data
+   ```
+
+2. **格式化`sdb`**：如果`sdb`还没有格式化，你需要先对其进行格式化。例如，可以使用`ext4`文件系统格式化。
+   ```sh
+   sudo mkfs.ext4 /dev/sdb
+   ```
+
+3. **临时挂载**：为了测试挂载，可以先临时挂载硬盘。
+   ```sh
+   sudo mount /dev/sdb /data
+   ```
+
+4. **永久挂载**：为了让挂载在系统重启后依然有效，你需要编辑`/etc/fstab`文件。
+   - 打开`/etc/fstab`文件：
+     ```sh
+     sudo nano /etc/fstab
+     ```
+   - 添加以下行（假设使用`ext4`文件系统）：
+     ```
+     /dev/sdb    /data   ext4    defaults    0    2
+     ```
+
+5. **重启或重新挂载**：编辑完`/etc/fstab`后，可以重启系统或使用`mount -a`来立即应用更改。
+
+确保在编辑`/etc/fstab`时非常小心，因为错误的配置可能导致系统无法启动。在进行此类操作之前，建议备份任何重要数据。
 
 ### Thanks
 This script is based on [this](https://betterdev.blog/minimal-safe-bash-script-template/) minimal safe bash template, and steps found in [this](https://discourse.ubuntu.com/t/please-test-autoinstalls-for-20-04/15250) discussion thread (particularly [this](https://gist.github.com/s3rj1k/55b10cd20f31542046018fcce32f103e) script).

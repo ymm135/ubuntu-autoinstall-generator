@@ -78,6 +78,8 @@ function parse_params() {
         use_release_iso=0
         extra_data=''
         custom_commonds_sh=''
+        resource_dir=''
+        override_file=''
 
         while :; do
                 case "${1-}" in
@@ -106,6 +108,10 @@ function parse_params() {
                         ;;
                 -ed | --extra-data)
                         extra_data="${@:2}"
+                        shift
+                        ;;
+                -of | --override-file)
+                        override_file="${2-}"
                         shift
                         ;;
                 -?*) die "Unknown option: $1" ;;
@@ -147,10 +153,11 @@ function parse_params() {
                 log "💿 Current release is ${current_release}"
         fi
 
-        destination_iso=$(realpath "${destination_iso}")
+        # destination_iso=$(realpath "${destination_iso}")
         source_iso=$(realpath "${source_iso}")
         # extra_data=$(realpath "${extra_data}")
         custom_commonds_sh=$(realpath "custom_commonds.sh")
+        resource_dir=$(realpath "resource")
         return 0
 }
 
@@ -297,6 +304,7 @@ if [ "${extra_data}" != "" ]; then
         # 拷贝自定义指令脚本
         log "🧩 Adding custom_commonds file..."
         cp "$custom_commonds_sh" "$tmpdir/extra-data"
+        /bin/cp -frp "$resource_dir" "$tmpdir/extra-data"
         log "👍 Added custom_commonds."
 fi
 
@@ -311,6 +319,21 @@ else
         log "🗑️ Clearing MD5 hashes..."
         echo >"$tmpdir/md5sum.txt"
         log "👍 Cleared hashes."
+fi
+
+# 检查覆盖文件
+if [ "${override_file}" != "null" ] && [ "${override_file}" != "" ]; then
+        echo "check override file"
+        if [ -f "$override_file" ]; then
+                overrideTargetDir="$tmpdir/extra-data/resource/override/"
+                if [ ! -d "$overrideTargetDir" ]; then
+                        mkdir -p $overrideTargetDir
+                fi
+
+                tar -zxvf ${override_file} -C $overrideTargetDir
+        else
+                die "👿 $override_file file not exist."
+        fi
 fi
 
 log "📦 Repackaging extracted files into an ISO image..."

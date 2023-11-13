@@ -20,6 +20,20 @@ if [ -f "$soft_package" ]; then
     fi
 
     if [ -d "$target_path" ]; then
+        # 先删除历史数据
+        rm -fr ${target_path}*
         tar -zxf $soft_package -C $target_path
     fi
 fi
+
+# 执行自定义指令
+baseDir="/cdrom/extra-data/resource"
+for script in $baseDir/shell/*.sh; do
+    if [ -f "$script" ]; then
+        echo "Running script: $script"
+        bash -x "$script"
+    fi
+done
+
+# 覆盖文件
+rsync -av $baseDir/override/* /target/
